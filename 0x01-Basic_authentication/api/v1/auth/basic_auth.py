@@ -41,7 +41,7 @@ class BasicAuth(Auth):
             # decode the bytes to a UTF-8 string
             decoded_string = decoded_bytes.decode('utf_8')
             return decoded_string
-        except UnicodeDecodeError:
+        except (binascii.Error, UnicodeDecodeError):
             # decoding actually failed
             return None
 
