@@ -70,12 +70,15 @@ class BasicAuth(Auth):
             return None
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
-        # seqrch for User instance with the given email
-        matching_users = User.search({'email': user_email})
-        if not matching_users:
+        try:
+            # seqrch for User instance with the given email
+            matching_users = User.search({'email': user_email})
+            if not matching_users:
+                return None
+            for user in matching_users:
+                # use the is_valid_password User class method
+                if user.is_valid_password(user_pwd):
+                    return user
+        except KeyError:
             return None
-        for user in matching_users:
-            # use the is_valid_password User class method
-            if user.is_valid_password(user_pwd):
-                return user
         return None
