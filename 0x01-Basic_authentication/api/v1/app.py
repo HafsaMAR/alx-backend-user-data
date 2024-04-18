@@ -24,6 +24,7 @@ if AUTH_TYPE == 'basic_auth':
 
 
 def before_request():
+    '''before request check'''
     if auth is None:
         return
     excluded_paths = [
