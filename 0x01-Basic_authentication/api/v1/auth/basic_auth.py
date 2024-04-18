@@ -41,7 +41,7 @@ class BasicAuth(Auth):
             # decode the bytes to a UTF-8 string
             decoded_string = decoded_bytes.decode('utf_8')
             return decoded_string
-        except binascii.Error:
+        except UnicodeDecodeError:
             # decoding actually failed
             return None
 
@@ -82,3 +82,14 @@ class BasicAuth(Auth):
         except KeyError:
             return None
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Get the current user based on the request.
+        """
+        auth_header = self.authorization_header(request)
+        Base64 = self.extract_base64_authorization_header(auth_header)
+        decoded_base64 = self.decode_base64_authorization_header(Base64)
+        user_email, user_pwd = self.extract_user_credentials(decoded_base64)
+        user = self.user_object_from_credentials(user_email, user_pwd)
+        return user
