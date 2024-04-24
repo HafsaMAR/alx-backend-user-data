@@ -33,7 +33,7 @@ class Auth:
         user = self._db.add_user(email, hashed_password)
         return user
 
-    def valid_login(self, email: str, password: str):
+    def valid_login(self, email: str, password: str) -> bool:
         '''check credentials
         '''
         user = None
