@@ -30,17 +30,17 @@ def user_register() -> str:
 
 
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
-def login():
+def login() -> str:
     '''check credentials to login / abort otherwise
     '''
     email = request.form.get('email')
     password = request.form.get('password')
 
-    if Auth.valid_login(email, password):
-        Auth.create_session(email)
-        return jsonify({"email": email, "message": "logged in"})
-    else:
+    if  not Auth.valid_login(email, password):
         abort(401)
+    Auth.create_session(email)
+    return jsonify({"email": email, "message": "logged in"})
+        
 
 
 if __name__ == '__main__':
