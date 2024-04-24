@@ -68,10 +68,9 @@ class DB:
     def update_user(self, user_id: int, **kwarg) -> User:
         '''Update user after finding is using find_user_by
         '''
-        try:
-            user = self.find_user_by(id=user_id)
-        except NoResultFound:
-            raise ValueError()
+        user = self.find_user_by(id=user_id)
+        if user is None:
+            return
         for key, value in kwarg.items():
             if hasattr(User, key):
                 setattr(user, key, value)
