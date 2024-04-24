@@ -29,19 +29,20 @@ def user_register() -> str:
         return jsonify({"message": "email already registered"}), 400
 
 
-@app.route('/sessions', methods=['POST'], strict_slashes=False)
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login() -> str:
     '''check credentials to login / abort otherwise
     '''
     email = request.form.get('email')
     password = request.form.get('password')
 
-    if Auth.valid_login(email, password) == False:
+    if Auth.valid_login(email, password):
+        session_id = Auth.create_session(email)
+        response = jsonify({"email": email, "message": "logged in"})
+        response.set_cookie('session_id', session_id)
+        return response
+    else:
         abort(401)
-    session_id = Auth.create_session(email)
-    response = jsonify({"email": email, "message": "logged in"})
-    response.set_cookie('session_id', session_id)
-    return response
 
 
 if __name__ == '__main__':
