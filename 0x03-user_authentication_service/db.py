@@ -45,3 +45,22 @@ class DB:
             self._session.rollback()
             new_user = None
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        '''Find a user in the database based on input arguments
+
+        args:
+            **kwargs: Arbitrary keyword arguments to filter the query
+        '''
+
+        # construct a query to select users based on input
+        query = self._session.query(User)
+        # apply input arguments as filter to the query
+        query = query.filter_by(**kwargs)
+        if query is None:
+            raise InvalidRequestError()
+        # Retrieve the first result found
+        user = query.first()
+        if user is None:
+            raise NoResultFound()
+        return user
