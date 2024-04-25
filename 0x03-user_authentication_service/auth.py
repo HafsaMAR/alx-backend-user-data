@@ -5,6 +5,7 @@
 import bcrypt
 from db import DB
 from user import User
+from typing import Union
 import uuid
 from sqlalchemy.orm.exc import NoResultFound
 

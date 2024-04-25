@@ -2,7 +2,7 @@
 '''flask app module'''
 
 
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, redirect
 from auth import Auth
 
 Auth = Auth()
@@ -52,10 +52,10 @@ def logout() -> str:
         - Redirects to home route.
     """
     session_id = request.cookies.get("session_id")
-    user = AUTH.get_user_from_session_id(session_id)
+    user = Auth.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
-    AUTH.destroy_session(user.id)
+    Auth.destroy_session(user.id)
     return redirect("/")
 
 
@@ -66,7 +66,7 @@ def profile() -> str:
         - The user's profile information.
     """
     session_id = request.cookies.get("session_id")
-    user = AUTH.get_user_from_session_id(session_id)
+    user = Auth.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
     return jsonify({"email": user.email})
@@ -81,7 +81,7 @@ def get_reset_password_token() -> str:
     email = request.form.get("email")
     reset_token = None
     try:
-        reset_token = AUTH.get_reset_password_token(email)
+        reset_token = Auth.get_reset_password_token(email)
     except ValueError:
         reset_token = None
     if reset_token is None:
@@ -101,14 +101,13 @@ def update_password() -> str:
     new_password = request.form.get("new_password")
     is_password_changed = False
     try:
-        AUTH.update_password(reset_token, new_password)
+        Auth.update_password(reset_token, new_password)
         is_password_changed = True
     except ValueError:
         is_password_changed = False
     if not is_password_changed:
         abort(403)
     return jsonify({"email": email, "message": "Password updated"})
-
 
 
 if __name__ == '__main__':
